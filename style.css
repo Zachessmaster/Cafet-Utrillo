@@ -1,0 +1,146 @@
+/* =====================
+   CAISSE CAFET — THÈME SOMBRE
+   ===================== */
+
+:root {
+  --bg-page:       #0f1117;
+  --bg-card:       #1a1d27;
+  --bg-btn:        #1e2133;
+  --accent-green:  #2ecc71;
+  --accent-blue:   #3b82f6;
+  --accent-orange: #f59e0b;
+  --accent-red:    #ef4444;
+  --text-primary:  #f0f0f0;
+  --text-muted:    #7a7f9a;
+  --border:        rgba(255, 255, 255, 0.07);
+  --radius:        12px;
+}
+
+/* PAGE */
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 1rem;
+}
+
+/* TOTAL */
+.total-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.total-value {
+  color: var(--accent-green);
+}
+
+/* BOUTONS PRODUITS */
+.prod-btn {
+  background: var(--bg-btn);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.prod-btn:hover {
+  border-color: var(--accent-blue);
+}
+
+.prod-btn:active,
+.prod-btn.flash {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--accent-blue);
+}
+
+.prod-btn .prix {
+  color: var(--accent-green);
+}
+
+.prod-btn .count {
+  color: var(--text-muted);
+}
+
+/* BOUTONS ACTIONS */
+.actions button {
+  background: var(--bg-btn);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.btn-undo {
+  color: var(--accent-orange) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+.btn-undo:hover { background: rgba(245, 158, 11, 0.1) !important; }
+
+.btn-export {
+  color: var(--accent-blue) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.btn-export:hover { background: rgba(59, 130, 246, 0.1) !important; }
+
+.btn-reset {
+  color: var(--accent-red) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-reset:hover { background: rgba(239, 68, 68, 0.1) !important; }
+
+/* JOURNAL */
+.journal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.journal-title {
+  color: var(--text-muted);
+}
+
+.journal-item {
+  border-bottom-color: var(--border);
+}
+
+.journal-empty {
+  color: var(--text-muted);
+}
+
+/* STATS */
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.stat-card .s-nom,
+.stat-card .s-total {
+  color: var(--text-muted);
+}
+
+/* BARRE DE PROGRESSION */
+.progress-wrap {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.progress-bar {
+  background: var(--accent-green);
+}
+
+.progress-label {
+  color: var(--text-muted);
+}
+
+/* TOAST */
+.toast {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
