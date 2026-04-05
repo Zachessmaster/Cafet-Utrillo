@@ -150,42 +150,27 @@ function reset() {
   afficher();
   toast("Caisse remise à zéro");
 }
-let _modalCallback = null;
-
-function ouvrirModal(titre, callback) {
-  _modalCallback = callback;
-  document.getElementById("modal-titre").textContent = titre;
-  document.getElementById("modal-input").value = "";
-  const modal = document.getElementById("modal-caisse");
-  modal.style.display = "flex";
-  setTimeout(() => document.getElementById("modal-input").focus(), 100);
-}
-
-function validerModal() {
-  const n = parseFloat(document.getElementById("modal-input").value);
-  document.getElementById("modal-caisse").style.display = "none";
-  if (isNaN(n) || n < 0) { toast("Montant invalide"); return; }
-  if (_modalCallback) _modalCallback(Math.round(n * 100));
-}
 
 function setCaisseInitiale() {
-  ouvrirModal("Montant de départ (€)", (centimes) => {
-    caisseInitiale = centimes;
-    sauvegarder();
-    afficher();
-    toast("Caisse de départ : " + formatter(caisseInitiale));
-  });
+  const val = prompt("Montant de départ en caisse (€) :");
+  if (!val) return;
+  const n = parseFloat(val.replace(",", "."));
+  if (isNaN(n) || n < 0) { toast("Montant invalide"); return; }
+  caisseInitiale = Math.round(n * 100);
+  sauvegarder();
+  afficher();
+  toast("Caisse de départ : " + formatter(caisseInitiale));
 }
 
 function setCaisseReelle() {
-  ouvrirModal("Montant réel compté (€)", (centimes) => {
-    caisseReelle = centimes;
-    sauvegarder();
-    afficher();
-    toast("Caisse réelle enregistrée");
-  });
-}
-
+  const val = prompt("Montant réel compté en caisse (€) :");
+  if (!val) return;
+  const n = parseFloat(val.replace(",", "."));
+  if (isNaN(n) || n < 0) { toast("Montant invalide"); return; }
+  caisseReelle = Math.round(n * 100);
+  sauvegarder();
+  afficher();
+  toast("Caisse réelle enregistrée");
 }
 
 function exporter() {
