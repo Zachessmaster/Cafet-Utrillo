@@ -1,214 +1,56 @@
-<link rel="stylesheet" href="style.css">
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body-widget { display: block; }
-.root { padding: 1rem; max-width: 600px; margin: 0 auto; }
-.total-box { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-.total-label { font-size: 13px; color: var(--color-text-secondary); }
-.total-value { font-size: 28px; font-weight: 500; color: var(--color-text-success); }
-.progress-wrap { margin-top: 8px; background: var(--color-border-tertiary); border-radius: 4px; height: 6px; width: 100%; }
-.progress-bar { height: 6px; border-radius: 4px; background: var(--color-background-success); transition: width 0.3s; }
-.progress-label { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; }
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1rem; }
-.prod-btn { background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 14px 10px; cursor: pointer; text-align: center; transition: transform 0.1s, background 0.1s; user-select: none; }
-.prod-btn:active { transform: scale(0.96); background: var(--color-background-secondary); }
-.prod-btn .nom { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
-.prod-btn .prix { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
-.prod-btn .count { font-size: 11px; color: var(--color-text-info); margin-top: 4px; }
-.prod-btn.flash { background: var(--color-background-info); }
-.actions { display: flex; gap: 8px; margin-bottom: 1rem; }
-.actions button { flex: 1; padding: 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; font-size: 13px; color: var(--color-text-primary); }
-.btn-undo { color: var(--color-text-warning) !important; border-color: var(--color-border-warning) !important; }
-.btn-reset { color: var(--color-text-danger) !important; border-color: var(--color-border-danger) !important; }
-.btn-export { color: var(--color-text-info) !important; border-color: var(--color-border-info) !important; }
-.actions button:disabled { opacity: 0.4; cursor: not-allowed; }
-.journal { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; margin-bottom: 1rem; }
-.journal-title { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 6px; }
-.journal-item { font-size: 12px; color: var(--color-text-primary); padding: 3px 0; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; justify-content: space-between; }
-.journal-item:last-child { border-bottom: none; }
-.journal-empty { font-size: 12px; color: var(--color-text-tertiary); font-style: italic; }
-.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 8px 10px; }
-.stat-card .s-nom { font-size: 11px; color: var(--color-text-secondary); }
-.stat-card .s-val { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-top: 2px; }
-.stat-card .s-total { font-size: 11px; color: var(--color-text-secondary); }
-.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 8px 16px; font-size: 13px; color: var(--color-text-primary); opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 100; }
-.toast.show { opacity: 1; }
-</style>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caisse Cafet</title>
+  <link rel="stylesheet" href="style-v4.css">
+</head>
+<body>
 
-<div class="root">
-  <div class="total-box">
-    <div>
-      <div class="total-label">Total en cours</div>
-      <div class="total-value" id="total-display">0,00 €</div>
-      <div class="progress-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
-      <div class="progress-label" id="prog-label">Objectif : 0 / 50,00 €</div>
+  <div class="root">
+
+    <header class="header">
+      <div>
+        <div class="label">Total en cours</div>
+        <div class="total-value" id="total-display">0,00 €</div>
+        <div class="progress-wrap">
+          <div class="progress-bar" id="prog-bar"></div>
+        </div>
+        <div class="progress-label" id="prog-label">Objectif : 0,00 € / 50,00 €</div>
+      </div>
+      <div class="header-right">
+        <div class="label">Ventes</div>
+        <div class="nb-ventes" id="nb-ventes">0</div>
+      </div>
+    </header>
+
+    <div class="grid" id="buttons"></div>
+
+    <div class="actions">
+      <button class="btn-undo" id="btn-undo" onclick="annuler()">↩ Annuler</button>
+      <button class="btn-caisse" onclick="setCaisseInitiale()">💰 Début</button>
+      <button class="btn-caisse" onclick="setCaisseReelle()">🏁 Fin</button>
+      <button class="btn-export" onclick="exporter()">↓ Export</button>
+      <button class="btn-reset" onclick="reset()">✕ Reset</button>
     </div>
-    <div style="text-align:right">
-      <div class="total-label">Ventes</div>
-      <div style="font-size:22px; font-weight:500; color:var(--color-text-primary)" id="nb-ventes">0</div>
+
+    <div class="journal-box">
+      <div class="section-title">Dernières ventes</div>
+      <div id="journal-list"><div class="vide">Aucune vente pour l'instant</div></div>
     </div>
+
+    <div class="ecart-box" id="ecart-box" style="display:none">
+      <div class="section-title">Bilan de caisse</div>
+      <div id="ecart-contenu"></div>
+    </div>
+
+    <div class="stats-grid" id="stats"></div>
+
   </div>
 
-  <div class="grid" id="buttons"></div>
+  <div class="toast" id="toast"></div>
 
-  <div class="actions">
-    <button class="btn-undo" id="btn-undo" onclick="annuler()">↩ Annuler</button>
-    <button class="btn-export" onclick="exporterCSV()">↓ Export</button>
-    <button class="btn-reset" onclick="reset()">✕ Reset</button>
-  </div>
-
-  <div class="journal">
-    <div class="journal-title">Dernières ventes</div>
-    <div id="journal-list"><div class="journal-empty">Aucune vente pour l'instant</div></div>
-  </div>
-
-  <div class="stats" id="stats"></div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-const OBJECTIF = 50;
-const CLES_STORAGE = "caisse_v3";
-const produits = [
-  { nom: "Coca", emoji: "🥤", prix: 1.0 },
-  { nom: "Jus", emoji: "🍹", prix: 1.0 },
-  { nom: "Chips", emoji: "🍟", prix: 0.5 },
-  { nom: "Twix", emoji: "🍫", prix: 1.0 }
-];
-
-let total = 0;
-let historique = [];
-let ventes = {};
-
-function charger() {
-  try {
-    const raw = localStorage.getItem(CLES_STORAGE);
-    if (!raw) return;
-    const d = JSON.parse(raw);
-    total = d.total || 0;
-    historique = d.historique || [];
-    ventes = d.ventes || {};
-  } catch(e) {}
-  produits.forEach(p => { if (!ventes[p.nom]) ventes[p.nom] = 0; });
-}
-
-function sauvegarder() {
-  try {
-    localStorage.setItem(CLES_STORAGE, JSON.stringify({ total, historique, ventes }));
-  } catch(e) {
-    toast("Impossible de sauvegarder — mémoire pleine ?", "danger");
-  }
-}
-
-function formatter(centimes) {
-  return (centimes / 100).toFixed(2).replace(".", ",") + " €";
-}
-
-function toast(msg, type) {
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.className = "toast show";
-  setTimeout(() => el.className = "toast", 2200);
-}
-
-function afficher() {
-  document.getElementById("total-display").textContent = formatter(total);
-  const pct = Math.min(100, Math.round((total / (OBJECTIF * 100)) * 100));
-  document.getElementById("prog-bar").style.width = pct + "%";
-  document.getElementById("prog-label").textContent =
-    "Objectif : " + formatter(total) + " / " + OBJECTIF.toFixed(2).replace(".", ",") + " €";
-  document.getElementById("nb-ventes").textContent = historique.length;
-  document.getElementById("btn-undo").disabled = historique.length === 0;
-
-  const journal = document.getElementById("journal-list");
-  const recents = [...historique].reverse().slice(0, 5);
-  if (recents.length === 0) {
-    journal.innerHTML = '<div class="journal-empty">Aucune vente pour l\'instant</div>';
-  } else {
-    journal.innerHTML = recents.map(h =>
-      `<div class="journal-item"><span>${h.emoji} ${h.nom}</span><span style="color:var(--color-text-secondary)">${h.heure} — ${formatter(Math.round(h.prix * 100))}</span></div>`
-    ).join("");
-  }
-
-  const stats = document.getElementById("stats");
-  stats.innerHTML = produits.map(p => {
-    const q = ventes[p.nom] || 0;
-    const t = formatter(q * Math.round(p.prix * 100));
-    return `<div class="stat-card">
-      <div class="s-nom">${p.emoji} ${p.nom}</div>
-      <div class="s-val">${q} vendu${q > 1 ? "s" : ""}</div>
-      <div class="s-total">= ${t}</div>
-    </div>`;
-  }).join("");
-
-  produits.forEach(p => {
-    const btn = document.getElementById("btn-" + p.nom);
-    if (btn) btn.querySelector(".count").textContent = (ventes[p.nom] || 0) + "x vendu" + ((ventes[p.nom] || 0) > 1 ? "s" : "");
-  });
-}
-
-charger();
-
-const container = document.getElementById("buttons");
-produits.forEach(p => {
-  const btn = document.createElement("div");
-  btn.className = "prod-btn";
-  btn.id = "btn-" + p.nom;
-  btn.innerHTML = `<div class="nom">${p.emoji} ${p.nom}</div><div class="prix">${p.prix.toFixed(2).replace(".", ",")} €</div><div class="count">0x vendu</div>`;
-  btn.onclick = () => {
-    const centimes = Math.round(p.prix * 100);
-    total += centimes;
-    ventes[p.nom] = (ventes[p.nom] || 0) + 1;
-    historique.push({ nom: p.nom, emoji: p.emoji, prix: p.prix, heure: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) });
-    btn.classList.add("flash");
-    setTimeout(() => btn.classList.remove("flash"), 200);
-    sauvegarder();
-    afficher();
-    if (total === Math.round(OBJECTIF * 100)) toast("Objectif atteint !", "success");
-  };
-  container.appendChild(btn);
-});
-
-function annuler() {
-  if (historique.length === 0) return;
-  const last = historique.pop();
-  total = Math.max(0, total - Math.round(last.prix * 100));
-  ventes[last.nom] = Math.max(0, (ventes[last.nom] || 1) - 1);
-  sauvegarder();
-  afficher();
-  toast("Annulé : " + last.nom);
-}
-
-function reset() {
-  const code = prompt("Tapez 1234 pour remettre à zéro :");
-  if (code !== "1234") return;
-  total = 0; historique = []; ventes = {};
-  produits.forEach(p => ventes[p.nom] = 0);
-  localStorage.removeItem(CLES_STORAGE);
-  afficher();
-  toast("Caisse remise à zéro");
-}
-
-function exporterCSV() {
-  const date = new Date().toLocaleDateString("fr-FR");
-  let lignes = ["Produit,Quantite,Total HT"];
-  produits.forEach(p => {
-    const q = ventes[p.nom] || 0;
-    const t = ((q * Math.round(p.prix * 100)) / 100).toFixed(2);
-    lignes.push(`${p.nom},${q},${t}`);
-  });
-  lignes.push(`TOTAL,,${(total / 100).toFixed(2)}`);
-  lignes.push(`Date,${date}`);
-  const blob = new Blob([lignes.join("\n")], { type: "text/csv;charset=utf-8;" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "caisse_" + date.replace(/\//g, "-") + ".csv";
-  a.click();
-  toast("Export CSV téléchargé");
-}
-
-window.addEventListener("beforeunload", sauvegarder);
-afficher();
-</script>
+  <script src="caisse.js"></script>
+</body>
+</html>
